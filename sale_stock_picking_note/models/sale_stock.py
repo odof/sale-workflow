@@ -17,7 +17,7 @@ class StockMove(models.Model):
 
     def _get_new_picking_values(self):
         vals = super(StockMove, self)._get_new_picking_values()
-        sale_note = self.procurement_id.sale_line_id.order_id.picking_note
-        if sale_note:
-            vals['note'] = sale_note
+        sale_order = self.mapped('procurement_id').mapped('sale_line_id').mapped('order_id')
+        if len(sale_order) == 1 and sale_order.picking_note:
+            vals['note'] = sale_order.picking_note
         return vals
